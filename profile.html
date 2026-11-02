@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+    <div class="wrap">
+        <div class="profile-wrap">
+            <div class="profile-header">
+                <img src="assets/images/arrow.png" alt="arrow" onclick="window.location.href='menu.html'">
+                <h1>Profile</h1>
+                <div class="spacer"></div>
+            </div>
+            <div class="profile-content">
+                <div class="profile-picture"></div>
+                <div class="profile-info"></div>
+            </div>
+        </div>
+        <div class="footer">
+            <div data-page="menu">
+                <img src="assets/images/home.png" alt="home">
+                <p>Home</p>
+            </div>
+            <div data-page="order">
+                <img src="assets/images/order.png" alt="order">
+                <p>Order</p>
+            </div>
+            <div data-page="cart">
+                <img src="assets/images/cart.png" alt="cart">
+                <p>Cart</p>
+            </div>
+            <div data-page="profile" class="active">
+                <img src="assets/images/profile-on.png" alt="profile">
+                <p>Profile</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        const user = JSON.parse(localStorage.getItem('user'));
+        const profilPict = document.querySelector('.profile-picture');
+
+        profilPict.innerHTML = `
+            <img src="assets/images/pp.png" alt="profile">
+            <div>
+                <h1>${user.name}</h1>
+                <p>${user.email}</p>
+            </div>
+        `;
+
+        const profileInfo = document.querySelector('.profile-info');
+        profileInfo.innerHTML = `
+            <div>
+                <div>
+                <img src='assets/images/prof.png' alt='profile'>
+                <p>Name</p>
+                </div>
+                <div class="spacer"></div>
+                <p>${user.name}</p>
+            </div>
+            <hr>
+            <div>
+                <div>
+                    <img src='assets/images/email.png' alt='email'>
+                    <p>Email</p>
+                </div>
+                <div class="spacer"></div>
+                <p>${user.email}</p>
+            </div>
+            <hr>
+            <div>
+                <div>
+                    <img src='assets/images/ord.png' alt='order'>
+                    <p>Order History</p>
+                </div>
+                <div class="spacer"></div>
+                <p onclick="window.location.href='order.html'">View All</p>
+            </div>
+            <hr>
+            <div class="logout" onclick="localStorage.removeItem('user'); window.location.href='index.html'">
+                <div>
+                    <img src='assets/images/exit.png' alt='exit'>
+                    <p>Logout</p>
+                </div>
+                <div class="spacer"></div>
+                <div class="spacer"></div>
+            </div>
+        `;
+
+        /* =======================
+           FOOTER NAV
+        ======================= */
+        const currentPage =
+            window.location.pathname.split('/').pop().replace('.html', '') || 'menu';
+        
+        document.querySelectorAll('.footer div').forEach(item => {
+            if (item.dataset.page === currentPage) {
+                item.classList.add('active');
+            }
+        
+            item.addEventListener('click', () => {
+                window.location.href = item.dataset.page + '.html';
+            });
+        });
+    </script>
+</body>
+</html>

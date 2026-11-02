@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+    <div class="wrap">
+        <div class="order-wrap">
+            <div class="order-header">
+                <img src="assets/images/arrow.png" alt="arrow" onclick="window.location.href='menu.html'">
+                <h1>Your Order</h1>
+                <div class="spacer"></div>
+            </div>
+            <input id="searchOrder" type="text" placeholder='Search your order' autocomplete="off">
+            <div class="categories">
+                <p class="active" data-category="pending">Pending</p>
+                <p data-category="completed">Completed</p>
+                <p data-category="cancelled">Cancelled</p>
+            </div>
+            <div class="order"></div>
+        </div>
+        <div class="footer">
+            <div data-page="menu">
+                <img src="assets/images/home.png" alt="home">
+                <p>Home</p>
+            </div>
+            <div data-page="order" class="active">
+                <img src="assets/images/order-active.png" alt="order">
+                <p>Order</p>
+            </div>
+            <div data-page="cart">
+                <img src="assets/images/cart.png" alt="cart">
+                <p>Cart</p>
+            </div>
+            <div data-page="profile">
+                <img src="assets/images/profile.png" alt="profile">
+                <p>Profile</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        const productOrders = {
+            pending: [
+                {name: 'Apple', price: 6, currency: 'US$', image: 'assets/images/apple-fruit.png', unit: 'kg', amount: 1},
+                {name: 'Milk', price: 3, currency: 'US$', image: 'assets/images/milk.png', unit: 'kg', amount: 2},
+                {name: 'Soap', price: 2, currency: 'US$', image: 'assets/images/soap.png', unit: 'pcs', amount: 5},
+                {name: 'Chips', price: 2, currency: 'US$', image: 'assets/images/chips.png', unit: 'pcs', amount: 3},
+            ],
+            completed: [
+                {name: 'Cake', price: 5, currency: 'US$', image: 'assets/images/cake.png', unit: 'pcs', amount: 2},
+                {name: 'Juice', price: 3, currency: 'US$', image: 'assets/images/juice.png', unit: 'kg', amount: 1},
+                {name: 'Chocolate', price: 4, currency: 'US$', image: 'assets/images/chocolate.png', unit: 'pcs', amount: 4},
+                {name: 'Soda', price: 2, currency: 'US$', image: 'assets/images/soda.png', unit: 'pcs', amount: 1},
+            ],
+            cancelled: [
+                {name: 'Bread', price: 2, currency: 'US$', image: 'assets/images/bread.png', unit: 'pcs', amount: 1},
+                {name: 'Donut', price: 3, currency: 'US$', image: 'assets/images/donut.png', unit: 'kg', amount: 2},
+                {name: 'Ice Cream', price: 6, currency: 'US$', image: 'assets/images/ice-cream.png', unit: 'pcs', amount: 5},
+                {name: 'Pizza', price: 10, currency: 'US$', image: 'assets/images/pizza.png', unit: 'pcs', amount: 3},
+            ]
+        }
+
+    const orderContainer = document.querySelector('.order');
+    
+    let currentCategory = 'pending';
+
+    function renderOrder(list) {
+        orderContainer.innerHTML = list.map(item => {
+            const total = item.price * item.amount;
+            return `
+            <div>
+                <img src="${item.image}" alt="${item.name}">
+                <div>
+                    <h3>${item.name}</h3>
+                    <p>1${item.unit}</p>
+                </div>
+                <div class="spacer"></div>
+                <div>
+                    <p>x${item.amount}</p>
+                    <p><span>${item.currency}${item.price}</span></p>
+                    <p>Total: ${item.currency}${total}</p>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    const categories = document.querySelectorAll('.categories p');
+
+    categories.forEach(item => {
+        item.addEventListener('click', () => {
+            categories.forEach(p => p.classList.remove('active'));
+            item.classList.add('active');
+
+            currentCategory = item.dataset.category;
+            searchOrder.value = '';
+            renderOrder(productOrders[currentCategory]);
+        });
+    });
+
+    const searchOrder = document.getElementById('searchOrder');
+
+    searchOrder.addEventListener('input', () => {
+        const keyword = searchOrder.value.toLowerCase();
+
+        const filteredList = productOrders[currentCategory].filter(item => 
+            item.name.toLowerCase().includes(keyword)
+        );
+
+        renderOrder(filteredList);
+    });
+
+    //show order data
+    renderOrder(productOrders[currentCategory]);
+    
+    //connected footer to pages
+    const footerItems = document.querySelectorAll('.footer div');
+    const currentPage = window.location.pathname.split('/').pop().replace('.html', '') || 'order';
+
+        footerItems.forEach(item => {
+            if (item.dataset.page === currentPage) {
+                item.classList.add('active');
+            }
+            item.addEventListener('click', () => {
+                window.location.href = item.dataset.page + '.html';
+            });
+        });
+    </script>
+</body>
+</html>

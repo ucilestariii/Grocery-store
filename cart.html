@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+    <div class="wrap">
+        <div class="cart-wrap">
+            <div class="cart-header">
+                <img src="assets/images/arrow.png" alt="arrow" onclick="window.location.href='menu.html'">
+                <h1>Your Cart</h1>
+                <div class="spacer"></div>
+            </div>
+            <input id="searchCart" type="text" placeholder='Search your cart' autocomplete="off">
+            <div class="cart-products"></div>
+        </div>
+        <div class="footer">
+            <div data-page="menu">
+                <img src="assets/images/home.png" alt="home">
+                <p>Home</p>
+            </div>
+            <div data-page="order">
+                <img src="assets/images/order.png" alt="order">
+                <p>Order</p>
+            </div>
+            <div data-page="cart" class="active">
+                <img src="assets/images/cart-active.png" alt="cart">
+                <p>Cart</p>
+            </div>
+            <div data-page="profile">
+                <img src="assets/images/profile.png" alt="profile">
+                <p>Profile</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        /* ======================
+           FOOTER NAV (FIX)
+        ====================== */
+        const footerItems = document.querySelectorAll('.footer div');
+        const currentPage =
+            window.location.pathname.split('/').pop().replace('.html', '') || 'cart';
+        
+        footerItems.forEach(item => {
+            if (item.dataset.page === currentPage) {
+                item.classList.add('active');
+            }
+        
+            item.addEventListener('click', () => {
+                window.location.href = item.dataset.page + '.html';
+            });
+        });
+        
+        /* ======================
+           CART RENDER
+        ====================== */
+        const cartContainer = document.querySelector('.cart-products');
+        
+        function renderCart(data) {
+            const cart = data || JSON.parse(localStorage.getItem('cart')) || [];
+            
+            // ⛔ TIDAK ADA PRODUK (hasil search kosong)
+            if (cart.length === 0 && data) {
+                cartContainer.innerHTML = '<p>Produk tidak ditemukan</p>';
+                cartContainer.style.color = 'rgb(107, 107, 107)';
+                cartContainer.style.fontSize = '16px';
+                cartContainer.style.textAlign = 'center';
+                return;
+            }
+
+            if (cart.length === 0) {
+                cartContainer.innerHTML = '<p>Cart kosong</p>';
+                cartContainer.style.color = 'rgb(107, 107, 107)';
+                cartContainer.style.fontSize = '16px';
+                cartContainer.style.textAlign = 'center';
+                return;
+            }
+        
+            cartContainer.innerHTML = cart.map((item, index) => `
+                <div class="cart-item">
+                    <div>
+                    <img src="${item.image}">
+                        <div>
+                            <h3>${item.name}</h3>
+                            <p><span>${item.currency}${item.price}</span>/<span>${item.unit}</span></p>
+                        </div>
+                    </div>
+                    <div class="spacer"></div>
+                    <div class="qty-control">
+                        <button class="decrease-qty" data-index="${index}">-</button>
+                        <p>${item.qty}</p>
+                        <button class="increase-qty" data-index="${index}">+</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        renderCart();
+        
+        /* ======================
+           QTY CONTROL
+        ====================== */
+        document.addEventListener('click', e => {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        
+            if (e.target.classList.contains('increase-qty')) {
+                const index = e.target.dataset.index;
+                cart[index].qty++;
+            }
+        
+            if (e.target.classList.contains('decrease-qty')) {
+                const index = e.target.dataset.index;
+                cart[index].qty--;
+        
+                if (cart[index].qty <= 0) {
+                    cart.splice(index, 1); // hapus produk
+                }
+            }
+        
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCart();
+        });
+
+        /* ======================
+           SEARCH CART
+        ====================== */
+
+        const searchCart = document.getElementById('searchCart');
+
+        searchCart.addEventListener('input', () => {
+            const keyword = searchCart.value.toLowerCase();
+
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+            const filteredCart = cart.filter(item => 
+                item.name.toLowerCase().includes(keyword)
+            );
+
+            renderCart(filteredCart);
+        })
+        </script>
+        
+</body>
+</html>

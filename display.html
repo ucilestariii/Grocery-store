@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+    <div class="wrap">
+        <div class="display-wrap"></div>
+        <div class="display-footer">
+        </div>
+    </div>
+    <script>
+        const displayProduct = JSON.parse(localStorage.getItem('display'));
+        const displayContainer = document.querySelector('.display-wrap');
+        displayContainer.innerHTML = `
+            <div class="display-header">
+                <img src="assets/images/arrow.png" alt="arrow" onclick="window.location.href='menu.html'">
+                <img src="${displayProduct.image}" alt="${displayProduct.name}">
+            </div>
+            <div class="display-content">
+                <h1>${displayProduct.name}</h1>
+                <p>Available on stock</p>
+                <p>Product Description:</p>
+                <p>${displayProduct.description}</p>
+            </div>
+        `;
+
+        const displayFooter = document.querySelector('.display-footer');
+        displayFooter.innerHTML = `
+            <p>${displayProduct.currency}${displayProduct.price}<span>/</span><span>${displayProduct.unit}</span></p>
+            <button>Add to Cart</button>
+        `;
+
+        const addToCartButton = document.querySelector('.display-footer button');
+
+        addToCartButton.addEventListener('click', () => {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+            const exist = cart.find(item => item.name === displayProduct.name);
+
+            if (exist) {
+                exist.qty++;
+            } else {
+                cart.push({...displayProduct, qty: 1});
+            }
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            
+            showToast();
+        });
+
+        function showToast() {
+            const toast = document.createElement('div');
+            toast.classList.add('toast');
+            toast.textContent = 'Product added to cart';
+
+            document.body.appendChild(toast);
+
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

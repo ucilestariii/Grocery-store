@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+    <div class="wrap">
+        <div class="menu-wrap">
+            <div class="menu-header">
+                <h1 id="title">Daily Grocery</h1>
+                <img id="searchIcon" src="assets/images/search.png" alt="search">
+                <img id="closeIcon" src="assets/images/arrow.png" alt="close" style="display: none;">
+                <input id="searchInput" type="text" placeholder="Search" style="display: none;">
+            </div>
+            <div class="menu-content">
+                <div class="categories">
+                    <p class="active" data-category="fruits">Fruits</p>
+                    <p data-category="vegetables">Vegetables</p>
+                    <p data-category="meat">Meat</p>
+                    <p data-category="dairy">Dairy</p>
+                    <p data-category="bakery">Bakery</p>
+                    <p data-category="frozen">Frozen</p>
+                    <p data-category="beverages">Beverages</p>
+                    <p data-category="snacks">Snacks</p>
+                    <p data-category="cleaning">Cleaning</p>
+                    <p data-category="personalCare">Personal Care</p>
+                </div>
+                <div class="products">
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <div data-page="menu" class="active">
+                <img src="assets/images/home-on.png" alt="home">
+                <p>Home</p>
+            </div>
+            <div data-page="order">
+                <img src="assets/images/order.png" alt="order">
+                <p>Order</p>
+            </div>
+            <div data-page="cart">
+                <img src="assets/images/cart.png" alt="cart">
+                <p>Cart</p>
+            </div>
+            <div data-page="profile">
+                <img src="assets/images/profile.png" alt="profile">
+                <p>Profile</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        /* =======================
+           PRODUCTS DATA
+        ======================= */
+        const productsData = {
+            fruits: [
+                {name: 'Apple', price: 6, currency: 'US$', image: 'assets/images/apple-fruit.png', unit: 'kg', description: 'Enjoy our fresh, crisp apples, available in vibrant red, green, and yellow varieties. They offer a sweet to tart flavor and are packed with fiber and antioxidants, making them a healthy, delicious snack for all ages'},
+                {name: 'Dragon Fruit', price: 7.1, currency: 'US$', image: 'assets/images/dragon-fruit.png', unit: 'kg', description: 'Taste the tropics with our exotic Dragon Fruit! Vibrant pink skin, sweet white/pink flesh, and tiny black seeds for a refreshing, healthy bite.'},
+                {name: 'Kiwi', price: 5, currency: 'US$', image: 'assets/images/kiwi.png', unit: 'kg', description: 'Our Kiwi Fruit is a delicious, tangy snack that packs a punch of flavor and nutrition. With its fuzzy green exterior and vibrant golden-brown flesh, it’s a must-try for anyone looking for a burst of taste in every bite.'},
+                {name: 'Strawberry', price: 10.6, currency: 'US$', image: 'assets/images/strawberry.png', unit: 'kg', description: 'Our Strawberry Fruit is a sweet, juicy fruit that packs a punch of flavor and nutrition. With its vibrant red exterior and sweet, tangy flesh, it’s a must-try for anyone looking for a burst of taste in every bite.'},
+                {name: 'Orange', price: 8.5, currency: 'US$', image: 'assets/images/orange.png', unit: 'kg', description: 'Our Orange Fruit is a sweet, juicy fruit that packs a punch of flavor and nutrition. With its vibrant red exterior and sweet, tangy flesh, it’s a must-try for anyone looking for a burst of taste in every bite.'}
+            ],
+            vegetables: [
+                {name: 'Carrot', price: 10, currency: 'US$', image: 'assets/images/carrot.png', unit: 'kg', description: 'From refreshing carrot juice to sweet carrot cake and savory stews, carrots add nutrition and flavor to any meal. Explore our range of processed carrot products for convenient, healthy options.'},
+                {name: 'Tomato', price: 6.5, currency: 'US$', image: 'assets/images/tomato.png', unit: 'kg', description: 'Fresh, ripe tomatoes with a bright red color and juicy texture. Rich in vitamins and antioxidants, tomatoes are perfect for salads, sauces, soups, and everyday cooking. They add a natural sweetness and fresh flavor to any dish.'},
+                {name: 'Onion', price: 5.5, currency: 'US$', image: 'assets/images/onion.png', unit: 'kg', description: 'Fresh onions with a strong aroma and distinctive flavor. A basic ingredient in many cuisines, onions enhance the taste of soups, stir-fries, sauces, and savory dishes. They can be used raw or cooked for deeper flavor.'},
+                {name: 'Potato', price: 4.5, currency: 'US$', image: 'assets/images/potato.png', unit: 'kg', description: 'High-quality potatoes with a smooth texture and mild taste. Versatile and filling, potatoes are ideal for frying, boiling, baking, or mashing. A great source of carbohydrates for daily meals.'}
+            ],
+            meat: [
+                {name: 'Chicken', price: 12, currency: 'US$', image: 'assets/images/chicken.png', unit: 'kg', description: 'Fresh, high-quality chicken with tender texture and natural flavor. Perfect for grilling, frying, boiling, or roasting. A versatile protein choice for everyday meals.'},
+                {name: 'Beef', price: 14, currency: 'US$', image: 'assets/images/beef.png', unit: 'kg', description: 'Premium beef with rich flavor and firm texture. Ideal for steaks, stir-fries, soups, and slow-cooked dishes. Carefully selected to ensure freshness and quality.'},
+                {name: 'Pork', price: 11, currency: 'US$', image: 'assets/images/pork.png', unit: 'kg', description: 'Fresh lamb with a distinctive, rich taste and tender meat. Suitable for grilling, roasting, or braising. A great choice for flavorful and hearty dishes.'},
+                {name: 'Lamb', price: 16, currency: 'US$', image: 'assets/images/lamb.png', unit: 'kg', description: 'Fresh pork with a juicy texture and mild, savory flavor. Perfect for grilling, frying, or slow cooking. A popular protein for a wide variety of cuisines.'}
+            ],
+            dairy: [
+                {name: 'Milk', price: 3, currency: 'US$', image: 'assets/images/milk.png', unit: 'liter', description: 'Fresh and nutritious milk, rich in calcium and essential vitamins. Perfect for drinking, cooking, baking, or mixing into your favorite beverages.'},
+                {name: 'Egg', price: 0.5, currency: 'US$', image: 'assets/images/egg.png', unit: 'pcs', description: 'Fresh farm eggs with high protein content and natural quality. Ideal for boiling, frying, baking, and various everyday recipes.'},
+                {name: 'Cheese', price: 10, currency: 'US$', image: 'assets/images/cheese.png', unit: 'kg', description: 'High-quality cheese with a rich, creamy flavor and smooth texture. Perfect for sandwiches, pasta, salads, and cooking.'},
+                {name: 'Yogurt', price: 2, currency: 'US$', image: 'assets/images/yogurt.png', unit: 'pcs', description: 'Fresh and creamy yogurt with a smooth texture and refreshing taste. Rich in probiotics, making it a healthy choice for digestion and daily nutrition.'}
+            ],
+            bakery: [
+                {name: 'Bread', price: 2, currency: 'US$', image: 'assets/images/bread.png', unit: 'pcs', description: 'Freshly baked bread with a soft texture and rich aroma. Perfect for breakfast, sandwiches, or as a side for any meal.'},
+                {name: 'Cake', price: 5, currency: 'US$', image: 'assets/images/cake.png', unit: 'pcs', description: 'Delicious cake with a soft, moist texture and rich flavor. Ideal for celebrations, desserts, or enjoying with tea and coffee.s'},
+                {name: 'Donut', price: 3, currency: 'US$', image: 'assets/images/donut.png', unit: 'pcs', description: 'Soft and fluffy donuts with a sweet glaze and delightful taste. Perfect as a snack or dessert at any time of the day.'},
+                {name: 'Pastry', price: 4, currency: 'US$', image: 'assets/images/pastry.png', unit: 'pcs', description: 'Fresh, buttery pastry with a crispy outside and soft inside. Perfect for breakfast, snacks, or pairing with coffee.'}
+            ],
+            frozen: [
+                {name: 'Ice Cream', price: 6, currency: 'US$', image: 'assets/images/ice-cream.png', unit: 'pcs', description: 'Creamy and refreshing ice cream with a smooth texture and rich flavor. Perfect for dessert and enjoying any time of the day.'},
+                {name: 'Pizza', price: 10, currency: 'US$', image: 'assets/images/pizza.png', unit: 'pcs', description: 'Delicious pizza made with a crispy crust, rich sauce, and flavorful toppings. Perfect for sharing or enjoying as a satisfying meal.'},
+                {name: 'Pasta', price: 8, currency: 'US$', image: 'assets/images/pasta.png', unit: 'pcs', description: 'High-quality pasta with a firm texture and authentic taste. Ideal for a variety of sauces, from creamy to tomato-based dishes.s'},
+                {name: 'Rice', price: 5, currency: 'US$', image: 'assets/images/rice.png', unit: 'pcs', description: 'Premium rice with a soft texture and natural aroma when cooked. A staple food that pairs perfectly with many dishes.'}
+            ],
+            beverages: [
+                {name: 'Water', price: 1, currency: 'US$', image: 'assets/images/water.png', unit: 'liter', description: 'Clean and refreshing drinking water to keep you hydrated throughout the day. Perfect for daily consumption.'},
+                {name: 'Soda', price: 2, currency: 'US$', image: 'assets/images/soda.png', unit: 'pcs', description: 'Refreshing carbonated drink with a crisp taste and lively bubbles. Perfect for enjoying cold at any time.'},
+                {name: 'Juice', price: 3, currency: 'US$', image: 'assets/images/juice.png', unit: 'liter', description: 'Fresh and flavorful fruit juice made from selected fruits. A delicious source of natural vitamins for everyday refreshment.'},
+                {name: 'Tea', price: 4, currency: 'US$', image: 'assets/images/tea.png', unit: 'pcs', description: 'High-quality tea with a soothing aroma and smooth taste. Enjoy it hot or cold for a relaxing and refreshing drink.'}
+            ],
+            snacks: [
+                {name: 'Chips', price: 2, currency: 'US$', image: 'assets/images/chips.png', unit: 'pcs', description: 'Crispy and crunchy chips with a savory flavor. Perfect for snacking anytime and sharing with friends.'},
+                {name: 'Candy', price: 3, currency: 'US$', image: 'assets/images/candy.png', unit: 'pcs', description: 'Colorful and sweet candies with fun flavors. A delightful treat for all ages.'},
+                {name: 'Chocolate', price: 4, currency: 'US$', image: 'assets/images/chocolate.png', unit: 'pcs', description: 'Rich and smooth chocolate made from quality cocoa. Perfect for dessert, gifting, or enjoying anytime.'},
+                {name: 'Nuts', price: 5, currency: 'US$', image: 'assets/images/nuts.png', unit: 'pcs', description: 'Fresh and crunchy nuts packed with natural protein and healthy fats. Ideal for snacking or adding to meals.'}
+            ],
+            cleaning: [
+                {name: 'Soap', price: 2, currency: 'US$', image: 'assets/images/soap.png', unit: 'pcs', description: 'Gentle and refreshing soap that cleanses the skin effectively. Helps keep your skin fresh, clean, and smooth all day.s'},
+                {name: 'Toothpaste', price: 3, currency: 'US$', image: 'assets/images/toothpaste.png', unit: 'pcs', description: 'Effective toothpaste that helps clean teeth and protect against cavities. Leaves your mouth feeling fresh and healthy.'},
+                {name: 'Shampoo', price: 4, currency: 'US$', image: 'assets/images/shampoo.png', unit: 'pcs', description: 'Mild shampoo that cleanses the hair and scalp gently. Helps keep hair clean, soft, and refreshed.'}
+            ],
+            personalCare: [
+                {name: 'Shampoo', price: 5, currency: 'US$', image: 'assets/images/shampoo.png', unit: 'pcs', description: 'Gentle shampoo that cleanses the hair and scalp effectively. Helps keep hair clean, fresh, and soft.'},
+                {name: 'Conditioner', price: 6, currency: 'US$', image: 'assets/images/conditioner.png', unit: 'pcs', description: 'Nourishing conditioner that helps smooth and soften hair. Makes hair easier to manage and reduces dryness.'},
+                {name: 'Mouthwash', price: 7, currency: 'US$', image: 'assets/images/mouthwash.png', unit: 'pcs', description: 'Refreshing mouthwash that helps maintain oral hygiene. Leaves your breath fresh and your mouth feeling clean.'},
+                {name: 'Toothpaste', price: 8, currency: 'US$', image: 'assets/images/toothpaste.png', unit: 'pcs', description: 'Effective toothpaste that helps clean teeth and protect against cavities. Leaves your mouth feeling fresh and healthy.'}
+            ]
+        };
+        
+        /* =======================
+           RENDER PRODUCTS
+        ======================= */
+        const productContainer = document.querySelector('.products');
+        
+        function renderProducts(category) {
+            productContainer.innerHTML = productsData[category]
+                .map((item, index) => `
+                    <div class="product-card" data-category="${category}" data-index="${index}">
+                        <img src="${item.image}" alt="${item.name}">
+                        <h3>${item.name}</h3>
+                        <div class="price-row">
+                            <p><span>${item.currency}${item.price}</span>/<span>${item.unit}</span></p>
+                            <button class="add-to-cart"
+                                data-category="${category}"
+                                data-index="${index}">+</button>
+                        </div>
+                    </div>
+                `).join('');
+        }
+        
+        renderProducts('fruits');
+        
+        /* =======================
+           CATEGORY CLICK
+        ======================= */
+        document.querySelectorAll('.categories p').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.categories p')
+                    .forEach(p => p.classList.remove('active'));
+        
+                item.classList.add('active');
+                renderProducts(item.dataset.category);
+            });
+        });
+        
+        /* =======================
+           ADD TO CART
+        ======================= */
+        document.addEventListener('click', e => {
+            if (!e.target.classList.contains('add-to-cart')) return;
+
+            e.stopPropagation();
+        
+            const category = e.target.dataset.category;
+            const index = e.target.dataset.index;
+            const product = productsData[category][index];
+        
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        
+            const exist = cart.find(item => item.name === product.name);
+        
+            if (exist) {
+                exist.qty++;
+            } else {
+                cart.push({...product, qty: 1});
+            }
+        
+            localStorage.setItem('cart', JSON.stringify(cart));
+
+            showToast();
+        });
+
+        function showToast() {
+            const toast = document.createElement('div');
+            toast.classList.add('toast');
+            toast.textContent = 'Product added to cart';
+            document.body.appendChild(toast);
+
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 1000);
+        }
+        
+        /* =======================
+           FOOTER NAV
+        ======================= */
+        const currentPage =
+            window.location.pathname.split('/').pop().replace('.html', '') || 'menu';
+        
+        document.querySelectorAll('.footer div').forEach(item => {
+            if (item.dataset.page === currentPage) {
+                item.classList.add('active');
+            }
+        
+            item.addEventListener('click', () => {
+                window.location.href = item.dataset.page + '.html';
+            });
+        });
+
+        const searchIcon = document.getElementById('searchIcon');
+        const title = document.getElementById('title');
+        const closeIcon = document.getElementById('closeIcon');
+        const searchInput = document.getElementById('searchInput');
+
+        searchIcon.addEventListener('click', () => {
+            searchIcon.style.display = 'none';
+            title.style.display = 'none';
+            closeIcon.style.transition = 'all 0.3s ease';
+            closeIcon.style.display = 'block';
+            searchInput.style.display = 'block';
+            searchInput.focus();
+        });
+
+        closeIcon.addEventListener('click', () => {
+            searchIcon.style.display = 'block';
+            title.style.display = 'block';
+            closeIcon.style.display = 'none';
+            searchInput.style.display = 'none';
+            searchInput.value = '';
+        });
+
+        searchInput.addEventListener('input', () => {
+            const keyword = searchInput.value.toLowerCase();
+            const products = document.querySelectorAll('.product-card');
+            products.forEach(product => {
+                product.style.display = product.textContent.toLowerCase().includes(keyword) ? 'block' : 'none';
+            });
+            if (products.length === 0) {
+                productContainer.innerHTML = '<p>No products found</p>';
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('add-to-cart')) return;
+            const card = e.target.closest('.product-card');
+            if (!card) return;
+
+            const category = card.dataset.category;
+            const index = card.dataset.index;
+            const product = productsData[category][index];
+
+            localStorage.setItem('display', JSON.stringify(product));
+            window.location.href = 'display.html';
+        });
+    </script>
+</body>
+</html>
